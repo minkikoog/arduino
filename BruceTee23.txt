@@ -1,0 +1,47 @@
+#include <AFMotor.h>
+
+//defining pins and variables
+#define lefts A0 
+#define rights A2
+
+//defining motors
+AF_DCMotor motor2(2, MOTOR12_8KHZ); 
+AF_DCMotor motor3(3, MOTOR12_8KHZ);
+
+void setup() {
+  //setting the speed of motors
+  motor2.setSpeed(200);
+  motor3.setSpeed(200);
+  //declaring pin types
+  pinMode(lefts,INPUT);
+  pinMode(rights,INPUT);
+  
+}
+
+void loop(){
+  //There is reflected light from surface (no line)
+  if(analogRead(lefts)<=400 && analogRead(rights)<=400){
+    //stop0
+    motor2.run(FORWARD);
+    motor3.run(FORWARD);
+  }
+  //line detected by left sensor (no light reflected to left sensor), robot turns left
+  else if(!analogRead(lefts)<=400 && analogRead(rights)<=400){
+    //turn left
+    motor2.run(BACKWARD);
+    motor3.run(FORWARD);
+  }
+  //line detected by right sensor (no light reflected to right sensor), robot turns right
+  else if(analogRead(lefts)<=400 && !analogRead(rights)<=400){
+    //turn right
+    motor2.run(FORWARD);
+    motor3.run(BACKWARD);
+  }
+  //both sensors receive no reflected light 
+  else if(!analogRead(lefts)<=400 && !analogRead(rights)<=400){
+    //stop
+    motor2.run(RELEASE);
+    motor3.run(RELEASE);
+  }
+  
+}
